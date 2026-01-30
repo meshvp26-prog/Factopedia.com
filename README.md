@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Factopedia</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #00ff00;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            text-align: center;
+        }
+        header {
+            padding: 20px;
+            border-bottom: 1px solid #00ff00;
+        }
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        button {
+            background: #00ff00;
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 0 10px #00ff00;
+        }
+        button:hover {
+            box-shadow: 0 0 20px #00ff00;
+        }
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+        #fact-display {
+            max-width: 700px;
+            font-size: 24px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            border: 1px solid #00ff00;
+            padding: 20px;
+            background: rgba(0, 255, 0, 0.1);
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #counter {
+            font-size: 16px;
+            color: #ffff00;
+        }
+        footer {
+            padding: 10px;
+            border-top: 1px solid #00ff00;
+        }
+        a {
+            color: #00ff00;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Factopedia</h1>
+        <p>Fetches random facts from the factopedia. Click for wisdom!</p>
+    </header>
+    <main>
+        <button id="fact-button">Fetch Random Fact</button>
+        <div id="fact-display">Ready to explore? Hit the button!</div>
+        <div id="counter">Facts fetched: 0</div>
+    </main>
+    <footer>
+        <p>Powered by MK producers.jsph.pl API | <a href="#">About</a> | <a href="#">Source</a></p>
+    </footer>
+    <script>
+        let counter = 0;
+        const button = document.getElementById('fact-button');
+        const display = document.getElementById('fact-display');
+        const counterDiv = document.getElementById('counter');
+
+        button.addEventListener('click', async () => {
+            button.disabled = true;
+            button.textContent = 'Fetching...';
+            display.textContent = 'Loading fact...';
+
+            try {
+                const response = await fetch('https://uselessfacts.jsph.pl/random.json?language=en');
+                if (!response.ok) {
+                    throw new Error('API error');
+                }
+                const data = await response.json();
+                display.textContent = data.text;
+                counter++;
+                counterDiv.textContent = `Facts fetched: ${counter}`;
+            } catch (error) {
+                display.textContent = 'Oops! Couldn\'t fetch a fact. Check your internet and try again.';
+                console.error('Fetch error:', error);
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Fetch Random Fact';
+            }
+        });
+    </script>
+</body>
+</html>
